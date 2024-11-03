@@ -1,0 +1,1932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Объединенная страница с функционалом цены</title>
+    <style>
+        @font-face {
+            font-family: 'Montserrat-Regular';
+            src: url('static/fonts/Montserrat-Regular.ttf') format('truetype');
+        }
+
+        @font-face {
+            font-family: 'Montserrat Black';
+            src: url('static/fonts/Montserrat-Black.ttf') format('truetype');
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f58634;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Стили для меню */
+        .menu-bar {
+            background-color: #333;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            font-family: 'Montserrat-Regular', sans-serif;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            width: 100%;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropbtn {
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-family: 'Montserrat-Regular', sans-serif;
+            border: none;
+            cursor: pointer;
+            margin-left: -20px;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: fixed;
+            background-color: #333;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            left: 0;
+            top: 40px;
+        }
+
+        .dropdown-content a {
+            font-family: 'Montserrat-Regular', sans-serif;
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown:hover .dropbtn {
+            color: #f58634;
+            background-color: #333;
+        }
+
+        .dropdown-content a:hover {
+            color: #f58634;
+            background-color: #333;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* Восстановление стилей для прокрутки */
+        .content-container {
+            margin-top: 40px; /* Высота меню */
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        /* Стили для полосы прокрутки */
+        .content-container::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .content-container::-webkit-scrollbar-thumb {
+            background-color: #f58634;
+            border-radius: 10px;
+        }
+
+        .content-container::-webkit-scrollbar-thumb:hover {
+            background-color: #f89043;
+        }
+
+        .content-container::-webkit-scrollbar-track {
+            background-color: #353535;
+        }
+
+        /* Контейнер для изображений с отступом */
+        .image-container {
+            position: relative;
+            margin-bottom: 2px; /* Отступ между контейнерами */
+            overflow-y: auto;
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Общие стили для текстовых полей */
+        .text-field {
+            position: absolute;
+            background: rgba(117, 109, 109, 0);
+            border: 0px solid #333;
+            padding: 0px;
+            font-family: 'Montserrat', sans-serif; /* Шрифт как в первом файле */
+            resize: none;
+            z-index: 8;
+            text-align: center;
+            outline: none;
+            color: #000000;
+            font-size: 18px;
+        }
+
+        /* Стили для поля даты */
+        .date-field {
+            position: absolute;
+            background: transparent;
+            font-family: 'Montserrat Black', sans-serif; /* Шрифт как в первом файле */
+            z-index: 6;
+            color: #ffffff;
+            font-size: 20px;
+            padding: 5px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Меню -->
+    <div class="menu-bar">
+        <div class="dropdown">
+            <button class="dropbtn">Файл</button>
+            <div class="dropdown-content">
+                <a href="#" id="openBtn">Открыть</a>
+                <a href="#" id="saveBtn">Сохранить</a>
+                <a href="#" id="savePdfBtn">Сохранить PDF</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-container">
+        <!-- Контейнер для изображения 1 с полем даты и ценами -->
+        <div class="image-container">
+            <div id="dateField" class="date-field"></div> <!-- Поле для отображения даты -->
+            <textarea id="pricePerPiece1" class="text-field">0</textarea> <!-- Поле для цены за штуку -->
+<textarea id="pricePerTon1" class="text-field" readonly>0</textarea> <!-- Поле для цены за тонну -->
+
+<textarea id="pricePerPiece2" class="text-field">0</textarea> <!-- Поле для цены за штуку -->
+<textarea id="pricePerTon2" class="text-field" readonly>0</textarea> <!-- Поле для цены за тонну -->
+
+<textarea id="pricePerPiece3" class="text-field">0</textarea> <!-- Поле для цены за штуку -->
+<textarea id="pricePerTon3" class="text-field" readonly>0</textarea> <!-- Поле для цены за тонну -->
+
+<textarea id="pricePerPiece4" class="text-field">0</textarea> <!-- Поле для цены за штуку -->
+<textarea id="pricePerTon4" class="text-field" readonly>0</textarea> <!-- Поле для цены за тонну -->
+
+<textarea id="pricePerPiece5" class="text-field">0</textarea> <!-- Поле для цены за штуку -->
+<textarea id="pricePerTon5" class="text-field" readonly>0</textarea> <!-- Поле для цены за тонну -->
+
+<textarea id="pricePerPiece6" class="text-field">0</textarea> <!-- Поле для цены за штуку -->
+<textarea id="pricePerTon6" class="text-field" readonly>0</textarea> <!-- Поле для цены за тонну -->
+
+<textarea id="pricePerPiece7" class="text-field">0</textarea> <!-- Поле для цены за штуку -->
+<textarea id="pricePerTon7" class="text-field" readonly>0</textarea> <!-- Поле для цены за тонну -->
+
+<textarea id="pricePerPiece8" class="text-field">0</textarea> <!-- Поле для цены за штуку -->
+<textarea id="pricePerTon8" class="text-field" readonly>0</textarea> <!-- Поле для цены за тонну -->
+
+<textarea id="pricePerPiece9" class="text-field">0</textarea> <!-- Поле для цены за штуку -->
+<textarea id="pricePerTon9" class="text-field" readonly>0</textarea> <!-- Поле для цены за тонну -->
+
+<textarea id="pricePerPiece10" class="text-field">0</textarea> <!-- Поле для цены за штуку -->
+<textarea id="pricePerTon10" class="text-field" readonly>0</textarea> <!-- Поле для цены за тонну -->
+
+<textarea id="pricePerPiece11" class="text-field">0</textarea> <!-- Поле для цены за штуку -->
+<textarea id="pricePerTon11" class="text-field" readonly>0</textarea> <!-- Поле для цены за тонну -->
+
+<textarea id="pricePerPiece12" class="text-field">0</textarea> <!-- Поле для цены за штуку -->
+<textarea id="pricePerTon12" class="text-field" readonly>0</textarea> <!-- Поле для цены за тонну -->
+
+<textarea id="pricePerPiece13" class="text-field">0</textarea> <!-- Поле для цены за штуку -->
+<textarea id="pricePerTon13" class="text-field" readonly>0</textarea> <!-- Поле для цены за тонну -->
+
+<textarea id="pricePerPiece14" class="text-field">0</textarea> <!-- Поле для цены за штуку -->
+<textarea id="pricePerTon14" class="text-field" readonly>0</textarea> <!-- Поле для цены за тонну -->
+
+<textarea id="pricePerPiece15" class="text-field">0</textarea> <!-- Поле для цены за штуку -->
+<textarea id="pricePerTon15" class="text-field" readonly>0</textarea> <!-- Поле для цены за тонну -->
+
+<textarea id="pricePerPiece16" class="text-field">0</textarea> <!-- Поле для цены за штуку -->
+<textarea id="pricePerTon16" class="text-field" readonly>0</textarea> <!-- Поле для цены за тонну -->
+
+<textarea id="pricePerPiece17" class="text-field">0</textarea> <!-- Поле для цены за штуку -->
+<textarea id="pricePerTon17" class="text-field" readonly>0</textarea> <!-- Поле для цены за тонну -->
+
+<textarea id="pricePerPiece18" class="text-field">0</textarea> <!-- Поле для цены за штуку -->
+<textarea id="pricePerTon18" class="text-field" readonly>0</textarea> <!-- Поле для цены за тонну -->
+
+<textarea id="pricePerPiece19" class="text-field">0</textarea> <!-- Поле для цены за штуку -->
+<textarea id="pricePerTon19" class="text-field" readonly>0</textarea> <!-- Поле для цены за тонну -->
+
+<textarea id="pricePerPiece20" class="text-field">0</textarea> <!-- Поле для цены за штуку -->
+<textarea id="pricePerTon20" class="text-field" readonly>0</textarea> <!-- Поле для цены за тонну -->
+
+<textarea id="pricePerPiece21" class="text-field">0</textarea> <!-- Поле для цены за штуку -->
+<textarea id="pricePerTon21" class="text-field" readonly>0</textarea> <!-- Поле для цены за тонну -->
+
+<textarea id="pricePerPiece22" class="text-field">0</textarea> <!-- Поле для цены за штуку -->
+<textarea id="pricePerTon22" class="text-field" readonly>0</textarea> <!-- Поле для цены за тонну -->
+
+<textarea id="pricePerPiece23" class="text-field">0</textarea> <!-- Поле для цены за штуку -->
+<textarea id="pricePerTon23" class="text-field" readonly>0</textarea> <!-- Поле для цены за тонну -->
+
+<textarea id="pricePerPiece24" class="text-field">0</textarea> <!-- Поле для цены за штуку -->
+<textarea id="pricePerTon24" class="text-field" readonly>0</textarea> <!-- Поле для цены за тонну -->
+
+<textarea id="pricePerPiece25" class="text-field">0</textarea> <!-- Поле для цены за штуку -->
+<textarea id="pricePerTon25" class="text-field" readonly>0</textarea> <!-- Поле для цены за тонну -->
+
+<textarea id="pricePerPiece26" class="text-field">0</textarea> <!-- Поле для цены за штуку -->
+<textarea id="pricePerTon26" class="text-field" readonly>0</textarea> <!-- Поле для цены за тонну -->
+
+<textarea id="pricePerPiece27" class="text-field">0</textarea> 
+<textarea id="pricePerTon27" class="text-field" readonly>0</textarea> 
+
+
+
+            <img id="image1" src="template1.jpg" alt="Изображение 1">
+        </div>
+
+        <!-- Контейнер для изображения 2 с дублированными блоками цен -->
+        <div class="image-container">
+            <textarea id="pricePerPiece28" class="text-field">0</textarea> 
+            <textarea id="pricePerTon28" class="text-field" readonly>0</textarea> 
+            <textarea id="pricePerPiece29" class="text-field">0</textarea> 
+            <textarea id="pricePerTon29" class="text-field" readonly>0</textarea> 
+            <textarea id="pricePerPiece30" class="text-field"readonly></textarea> 
+            <textarea id="pricePerTon30" class="text-field" >0</textarea> 
+            <textarea id="pricePerPiece31" class="text-field">0</textarea> 
+            <textarea id="pricePerTon31" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece32" class="text-field">0</textarea> 
+            <textarea id="pricePerTon32" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece33" class="text-field">0</textarea> 
+            <textarea id="pricePerTon33" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece34" class="text-field">0</textarea> 
+            <textarea id="pricePerTon34" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece35" class="text-field">0</textarea> 
+            <textarea id="pricePerTon35" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece36" class="text-field">0</textarea> 
+            <textarea id="pricePerTon36" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece37" class="text-field">0</textarea> 
+            <textarea id="pricePerTon37" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece38" class="text-field">0</textarea> 
+            <textarea id="pricePerTon38" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece39" class="text-field">0</textarea> 
+            <textarea id="pricePerTon39" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece40" class="text-field">0</textarea> 
+            <textarea id="pricePerTon40" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece41" class="text-field">0</textarea> 
+            <textarea id="pricePerTon41" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece42" class="text-field">0</textarea> 
+            <textarea id="pricePerTon42" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece43" class="text-field">0</textarea> 
+            <textarea id="pricePerTon43" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece44" class="text-field">0</textarea> 
+            <textarea id="pricePerTon44" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece45" class="text-field">0</textarea> 
+            <textarea id="pricePerTon45" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece46" class="text-field">0</textarea> 
+            <textarea id="pricePerTon46" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece47" class="text-field">0</textarea> 
+            <textarea id="pricePerTon47" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece48" class="text-field">0</textarea> 
+            <textarea id="pricePerTon48" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece49" class="text-field">0</textarea> 
+            <textarea id="pricePerTon49" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece50" class="text-field">0</textarea> 
+            <textarea id="pricePerTon50" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece51" class="text-field">0</textarea> 
+            <textarea id="pricePerTon51" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece52" class="text-field">0</textarea> 
+            <textarea id="pricePerTon52" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece53" class="text-field">0</textarea> 
+            <textarea id="pricePerTon53" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece54" class="text-field">0</textarea> 
+            <textarea id="pricePerTon54" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece55" class="text-field">0</textarea> 
+            <textarea id="pricePerTon55" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece56" class="text-field">0</textarea> 
+            <textarea id="pricePerTon56" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece57" class="text-field">0</textarea> 
+            <textarea id="pricePerTon57" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece58" class="text-field">0</textarea> 
+            <textarea id="pricePerTon58" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece59" class="text-field">0</textarea> 
+            <textarea id="pricePerTon59" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece60" class="text-field">0</textarea> 
+            <textarea id="pricePerTon60" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece61" class="text-field">0</textarea> 
+            <textarea id="pricePerTon61" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece62" class="text-field">0</textarea> 
+            <textarea id="pricePerTon62" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece63" class="text-field">0</textarea> 
+            <textarea id="pricePerTon63" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece64" class="text-field">0</textarea> 
+            <textarea id="pricePerTon64" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece65" class="text-field">0</textarea> 
+            <textarea id="pricePerTon65" class="text-field" readonly>0</textarea>
+            
+            <textarea id="pricePerPiece66" class="text-field">0</textarea> 
+            <textarea id="pricePerTon66" class="text-field" readonly>0</textarea>
+            
+            
+            <img id="image2" src="template2.jpg" alt="Изображение 2">
+        </div>
+
+        <!-- Контейнер для изображения 3 с дублированными блоками цен -->
+        <div class="image-container">
+            <textarea id="pricePerPiece67" class="text-field">0</textarea> <!-- Поле для цены за штуку (третье изображение) -->
+            <textarea id="pricePerTon67" class="text-field" readonly>0</textarea> <!-- Поле для цены за тонну (третье изображение) -->
+            <textarea id="pricePerPiece68" class="text-field">0</textarea>
+            <textarea id="pricePerTon68" class="text-field" readonly>0</textarea>
+            <textarea id="pricePerPiece69" class="text-field">0</textarea>
+            <textarea id="pricePerTon69" class="text-field" readonly>0</textarea>
+            <textarea id="pricePerPiece70" class="text-field">0</textarea>
+            <textarea id="pricePerTon70" class="text-field" readonly>0</textarea>
+            <textarea id="pricePerPiece71" class="text-field">0</textarea>
+            <textarea id="pricePerTon71" class="text-field" readonly>0</textarea>
+            <textarea id="pricePerPiece72" class="text-field">0</textarea>
+            <textarea id="pricePerTon72" class="text-field" readonly>0</textarea>
+            <textarea id="pricePerPiece73" class="text-field">0</textarea>
+            <textarea id="pricePerTon73" class="text-field" readonly>0</textarea>
+            <textarea id="pricePerPiece74" class="text-field">0</textarea>
+            <textarea id="pricePerTon74" class="text-field" readonly>0</textarea>
+            <textarea id="pricePerPiece75" class="text-field">0</textarea>
+            <textarea id="pricePerTon75" class="text-field" readonly>0</textarea>
+            <textarea id="pricePerPiece76" class="text-field">0</textarea>
+            <textarea id="pricePerTon76" class="text-field" readonly>0</textarea>
+            <textarea id="pricePerPiece77" class="text-field">0</textarea>
+            <textarea id="pricePerTon77" class="text-field" readonly>0</textarea>
+            <textarea id="pricePerPiece78" class="text-field">0</textarea>
+            <textarea id="pricePerTon78" class="text-field" readonly>0</textarea>
+            <textarea id="pricePerPiece79" class="text-field">0</textarea>
+            <textarea id="pricePerTon79" class="text-field" readonly>0</textarea>
+            <textarea id="pricePerPiece80" class="text-field">0</textarea>
+            <textarea id="pricePerTon80" class="text-field" readonly>0</textarea>
+            <textarea id="pricePerPiece81" class="text-field">0</textarea>
+            <textarea id="pricePerTon81" class="text-field" readonly>0</textarea>
+            <textarea id="pricePerPiece82" class="text-field">0</textarea>
+            <textarea id="pricePerTon82" class="text-field" readonly>0</textarea>
+            <textarea id="pricePerPiece83" class="text-field">0</textarea>
+            <textarea id="pricePerTon83" class="text-field" readonly>0</textarea>
+            <textarea id="pricePerPiece84" class="text-field">0</textarea>
+            <textarea id="pricePerTon84" class="text-field" readonly>0</textarea>
+            <textarea id="pricePerPiece85" class="text-field">0</textarea>
+            <textarea id="pricePerTon85" class="text-field" readonly>0</textarea>
+            <textarea id="pricePerPiece86" class="text-field">0</textarea>
+            <textarea id="pricePerTon86" class="text-field" readonly>0</textarea>
+            <textarea id="pricePerPiece87" class="text-field">0</textarea>
+            <textarea id="pricePerTon87" class="text-field" readonly>0</textarea>
+            <textarea id="pricePerPiece88" class="text-field">0</textarea>
+            <textarea id="pricePerTon88" class="text-field" readonly>0</textarea>
+            
+            <img id="image3" src="template3.jpg" alt="Изображение 3">
+        </div>
+    </div>
+
+    <script>
+        // Объекты с координатами и размерами текстовых полей для всех контейнеров
+        const coordinates1 = [
+        {field: 'pricePerPiece1', x: 1620, y: 995, width: 336},
+        {field: 'pricePerTon1', x: 1958, y: 995, width: 334},
+        {field: 'pricePerPiece2', x: 1620, y: 1065, width: 336},
+        {field: 'pricePerTon2', x: 1958, y: 1065, width: 334},
+        {field: 'pricePerPiece3', x: 1620, y: 1135, width: 336},
+        {field: 'pricePerTon3', x: 1958, y: 1135, width: 334},
+        {field: 'pricePerPiece4', x: 1620, y: 1205, width: 336},
+        {field: 'pricePerTon4', x: 1958, y: 1205, width: 334},
+        {field: 'pricePerPiece5', x: 1620, y: 1550, width: 336},
+        {field: 'pricePerTon5', x: 1958, y: 1550, width: 334},
+        {field: 'pricePerPiece6', x: 1620, y: 1620, width: 336},
+        {field: 'pricePerTon6', x: 1958, y: 1620, width: 334},
+        {field: 'pricePerPiece7', x: 1620, y: 1690, width: 336},
+        {field: 'pricePerTon7', x: 1958, y: 1690, width: 334},
+        {field: 'pricePerPiece8', x: 1620, y: 1760, width: 336},
+        {field: 'pricePerTon8', x: 1958, y: 1760, width: 334},
+        {field: 'pricePerPiece9', x: 1620, y: 1830, width: 336},
+        {field: 'pricePerTon9', x: 1958, y: 1830, width: 334},
+        {field: 'pricePerPiece10', x: 1620, y: 1900, width: 336},
+        {field: 'pricePerTon10', x: 1958, y: 1900, width: 334},
+        {field: 'pricePerPiece11', x: 1620, y: 1975, width: 336},
+        {field: 'pricePerTon11', x: 1958, y: 1975, width: 334},
+        {field: 'pricePerPiece12', x: 1620, y: 2050, width: 336},
+        {field: 'pricePerTon12', x: 1958, y: 2050, width: 334},
+        {field: 'pricePerPiece13', x: 1620, y: 2120, width: 336},
+        {field: 'pricePerTon13', x: 1958, y: 2120, width: 334},
+        {field: 'pricePerPiece14', x: 1620, y: 2190, width: 336},
+        {field: 'pricePerTon14', x: 1958, y: 2190, width: 334},
+        {field: 'pricePerPiece15', x: 1620, y: 2262, width: 336},
+        {field: 'pricePerTon15', x: 1958, y: 2262, width: 334},
+        {field: 'pricePerPiece16', x: 1620, y: 2330, width: 336},
+        {field: 'pricePerTon16', x: 1958, y: 2330, width: 334},        
+            {field: 'pricePerPiece17', x: 1620, y: 2675, width: 336},
+            {field: 'pricePerTon17', x: 1958, y: 2675, width: 334},
+            {field: 'pricePerPiece18', x: 1620, y: 2746, width: 336},
+            {field: 'pricePerTon18', x: 1958, y: 2746, width: 334},
+            {field: 'pricePerPiece19', x: 1620, y: 2813, width: 336},
+            {field: 'pricePerTon19', x: 1958, y: 2813, width: 334},
+            {field: 'pricePerPiece20', x: 1620, y: 2882, width: 336},
+            {field: 'pricePerTon20', x: 1958, y: 2882, width: 334},
+            {field: 'pricePerPiece21', x: 1620, y: 2959, width: 336},
+            {field: 'pricePerTon21', x: 1958, y: 2959, width: 334},
+            {field: 'pricePerPiece22', x: 1620, y: 3023, width: 336},
+            {field: 'pricePerTon22', x: 1958, y: 3023, width: 334},
+            {field: 'pricePerPiece23', x: 1620, y: 3095, width: 336},
+            {field: 'pricePerTon23', x: 1958, y: 3095, width: 334},
+            {field: 'pricePerPiece24', x: 1620, y: 3170, width: 336},
+            {field: 'pricePerTon24', x: 1958, y: 3170, width: 334},
+            {field: 'pricePerPiece25', x: 1620, y: 3239, width: 336},
+            {field: 'pricePerTon25', x: 1958, y: 3239, width: 334},
+            {field: 'pricePerPiece26', x: 1620, y: 3308, width: 336},
+            {field: 'pricePerTon26', x: 1958, y: 3308, width: 334},
+            {field: 'pricePerPiece27', x: 1620, y: 3383, width: 336},
+            {field: 'pricePerTon27', x: 1958, y: 3383, width: 334}            
+        ];
+        const coordinates2 = [
+        {field: 'pricePerPiece28', x: 1620, y: 110, width: 336},
+        {field: 'pricePerTon28', x: 1958, y: 110, width: 334},
+        {field: 'pricePerPiece29', x: 1620, y: 180, width: 336},
+        {field: 'pricePerTon29', x: 1958, y: 180, width: 334},
+        {field: 'pricePerPiece30', x: 1620, y: 250, width: 336},
+        {field: 'pricePerTon30', x: 1958, y: 250, width: 334},
+        {field: 'pricePerPiece31', x: 1620, y: 590, width: 336},
+        {field: 'pricePerTon31', x: 1958, y: 590, width: 334},
+        {field: 'pricePerPiece32', x: 1620, y: 665, width: 336},
+        {field: 'pricePerTon32', x: 1958, y: 665, width: 334},
+        {field: 'pricePerPiece33', x: 1620, y: 735, width: 336},
+        {field: 'pricePerTon33', x: 1958, y: 735, width: 334},
+        {field: 'pricePerPiece34', x: 1620, y: 805, width: 336},
+        {field: 'pricePerTon34', x: 1958, y: 805, width: 334},
+        {field: 'pricePerPiece35', x: 1620, y: 875, width: 336},
+        {field: 'pricePerTon35', x: 1958, y: 875, width: 334},
+        {field: 'pricePerPiece36', x: 1620, y: 945, width: 336},
+        {field: 'pricePerTon36', x: 1958, y: 945, width: 334},
+        {field: 'pricePerPiece37', x: 1620, y: 1015, width: 336},
+        {field: 'pricePerTon37', x: 1958, y: 1015, width: 334},
+        {field: 'pricePerPiece38', x: 1620, y: 1087, width: 336},
+        {field: 'pricePerTon38', x: 1958, y: 1087, width: 334},
+        {field: 'pricePerPiece39', x: 1620, y: 1159, width: 336},
+        {field: 'pricePerTon39', x: 1958, y: 1159, width: 334},
+        {field: 'pricePerPiece40', x: 1620, y: 1231, width: 336},
+        {field: 'pricePerTon40', x: 1958, y: 1231, width: 334},
+        {field: 'pricePerPiece41', x: 1620, y: 1303, width: 336},
+        {field: 'pricePerTon41', x: 1958, y: 1303, width: 334},
+        {field: 'pricePerPiece42', x: 1620, y: 1375, width: 336},
+        {field: 'pricePerTon42', x: 1958, y: 1375, width: 334},
+        {field: 'pricePerPiece43', x: 1620, y: 1447, width: 336},
+        {field: 'pricePerTon43', x: 1958, y: 1447, width: 334},
+        {field: 'pricePerPiece44', x: 1620, y: 1519, width: 336},
+        {field: 'pricePerTon44', x: 1958, y: 1519, width: 334},
+        {field: 'pricePerPiece45', x: 1620, y: 1591, width: 336},
+        {field: 'pricePerTon45', x: 1958, y: 1591, width: 334},
+        {field: 'pricePerPiece46', x: 1620, y: 1663, width: 336},
+        {field: 'pricePerTon46', x: 1958, y: 1663, width: 334},
+        {field: 'pricePerPiece47', x: 1620, y: 1735, width: 336},
+        {field: 'pricePerTon47', x: 1958, y: 1735, width: 334},
+        {field: 'pricePerPiece48', x: 1620, y: 1807, width: 336},
+        {field: 'pricePerTon48', x: 1958, y: 1807, width: 334},
+        {field: 'pricePerPiece49', x: 1620, y: 1879, width: 336},
+        {field: 'pricePerTon49', x: 1958, y: 1879, width: 334},
+        {field: 'pricePerPiece50', x: 1620, y: 1951, width: 336},
+        {field: 'pricePerTon50', x: 1958, y: 1951, width: 334},
+        {field: 'pricePerPiece51', x: 1620, y: 2023, width: 336},
+        {field: 'pricePerTon51', x: 1958, y: 2023, width: 334},
+        {field: 'pricePerPiece52', x: 1620, y: 2095, width: 336},
+        {field: 'pricePerTon52', x: 1958, y: 2095, width: 334},
+        {field: 'pricePerPiece53', x: 1620, y: 2160, width: 336},
+        {field: 'pricePerTon53', x: 1958, y: 2160, width: 334},
+        {field: 'pricePerPiece54', x: 1620, y: 2230, width: 336},
+        {field: 'pricePerTon54', x: 1958, y: 2230, width: 334},
+        {field: 'pricePerPiece55', x: 1620, y: 2300, width: 336},
+        {field: 'pricePerTon55', x: 1958, y: 2300, width: 334},
+        {field: 'pricePerPiece56', x: 1620, y: 2373, width: 336},
+        {field: 'pricePerTon56', x: 1958, y: 2373, width: 334},
+        {field: 'pricePerPiece57', x: 1620, y: 2445, width: 336},
+        {field: 'pricePerTon57', x: 1958, y: 2445, width: 334},
+        {field: 'pricePerPiece58', x: 1620, y: 2515, width: 336},
+        {field: 'pricePerTon58', x: 1958, y: 2515, width: 334},
+        {field: 'pricePerPiece59', x: 1620, y: 2580, width: 336},
+        {field: 'pricePerTon59', x: 1958, y: 2580, width: 334},
+        {field: 'pricePerPiece60', x: 1620, y: 2925, width: 336},
+        {field: 'pricePerTon60', x: 1958, y: 2925, width: 334},
+        {field: 'pricePerPiece61', x: 1620, y: 2998, width: 336},
+        {field: 'pricePerTon61', x: 1958, y: 2998, width: 334},
+        {field: 'pricePerPiece62', x: 1620, y: 3070, width: 336},
+        {field: 'pricePerTon62', x: 1958, y: 3070, width: 334},
+        {field: 'pricePerPiece63', x: 1620, y: 3138, width: 336},
+        {field: 'pricePerTon63', x: 1958, y: 3138, width: 334},
+        {field: 'pricePerPiece64', x: 1620, y: 3208, width: 336},
+        {field: 'pricePerTon64', x: 1958, y: 3208, width: 334},
+        {field: 'pricePerPiece65', x: 1620, y: 3280, width: 336},
+        {field: 'pricePerTon65', x: 1958, y: 3280, width: 334},
+        {field: 'pricePerPiece66', x: 1620, y: 3352, width: 336},
+        {field: 'pricePerTon66', x: 1958, y: 3352, width: 334}
+        
+        
+        
+
+        
+
+        ];
+        const coordinates3 = [
+        {field: 'pricePerPiece67', x: 1620, y: 108, width: 336},
+        {field: 'pricePerTon67', x: 1958, y: 108, width: 334},
+        {field: 'pricePerPiece68', x: 1620, y: 179, width: 336},
+        {field: 'pricePerTon68', x: 1958, y: 179, width: 334},
+        {field: 'pricePerPiece69', x: 1620, y: 250, width: 336},
+        {field: 'pricePerTon69', x: 1958, y: 250, width: 334},
+        {field: 'pricePerPiece70', x: 1620, y: 321, width: 336},
+        {field: 'pricePerTon70', x: 1958, y: 321, width: 334},
+        {field: 'pricePerPiece71', x: 1620, y: 392, width: 336},
+        {field: 'pricePerTon71', x: 1958, y: 392, width: 334},
+        {field: 'pricePerPiece72', x: 1620, y: 738, width: 336},
+        {field: 'pricePerTon72', x: 1958, y: 738, width: 334},
+        {field: 'pricePerPiece73', x: 1620, y: 809, width: 336},
+        {field: 'pricePerTon73', x: 1958, y: 809, width: 334},
+        {field: 'pricePerPiece74', x: 1620, y: 880, width: 336},
+        {field: 'pricePerTon74', x: 1958, y: 880, width: 334},
+        {field: 'pricePerPiece75', x: 1620, y: 951, width: 336},
+        {field: 'pricePerTon75', x: 1958, y: 951, width: 334},
+        {field: 'pricePerPiece76', x: 1620, y: 1022, width: 336},
+        {field: 'pricePerTon76', x: 1958, y: 1022, width: 334},
+        {field: 'pricePerPiece77', x: 1620, y: 1093, width: 336},
+        {field: 'pricePerTon77', x: 1958, y: 1093, width: 334},
+        {field: 'pricePerPiece78', x: 1620, y: 1164, width: 336},
+        {field: 'pricePerTon78', x: 1958, y: 1164, width: 334},
+        {field: 'pricePerPiece79', x: 1620, y: 1235, width: 336},
+        {field: 'pricePerTon79', x: 1958, y: 1235, width: 334},
+        {field: 'pricePerPiece80', x: 1620, y: 1306, width: 336},
+        {field: 'pricePerTon80', x: 1958, y: 1306, width: 334},
+        {field: 'pricePerPiece81', x: 1620, y: 1377, width: 336},
+        {field: 'pricePerTon81', x: 1958, y: 1377, width: 334},
+        {field: 'pricePerPiece82', x: 1620, y: 1448, width: 336},
+        {field: 'pricePerTon82', x: 1958, y: 1448, width: 334},
+        {field: 'pricePerPiece83', x: 1620, y: 1519, width: 336},
+        {field: 'pricePerTon83', x: 1958, y: 1519, width: 334},
+        {field: 'pricePerPiece84', x: 1620, y: 1590, width: 336},
+        {field: 'pricePerTon84', x: 1958, y: 1590, width: 334},
+        {field: 'pricePerPiece85', x: 1620, y: 1661, width: 336},
+        {field: 'pricePerTon85', x: 1958, y: 1661, width: 334},
+        {field: 'pricePerPiece86', x: 1620, y: 1732, width: 336},
+        {field: 'pricePerTon86', x: 1958, y: 1732, width: 334},
+        {field: 'pricePerPiece87', x: 1620, y: 2073, width: 336},
+        {field: 'pricePerTon87', x: 1958, y: 2073, width: 334},
+        {field: 'pricePerPiece88', x: 1620, y: 2142, width: 336},
+        {field: 'pricePerTon88', x: 1958, y: 2142, width: 334}
+
+        
+        ];
+
+        // Устанавливаем стили для каждого текстового поля на основе координат
+        function applyCoordinates() {
+            // Координаты для первого контейнера
+            const imageRect1 = document.getElementById("image1").getBoundingClientRect();
+            const scaleX1 = imageRect1.width / 2480;
+            const scaleY1 = imageRect1.height / 3508;
+
+            coordinates1.forEach(coord => {
+                const field = document.getElementById(coord.field);
+                field.style.left = `${coord.x * scaleX1}px`;
+                field.style.top = `${coord.y * scaleY1}px`;
+                field.style.width = `${coord.width * scaleX1}px`;
+                field.style.fontSize = `${42 * scaleY1}px`;
+            });
+
+            // Координаты для второго контейнера
+            const imageRect2 = document.getElementById("image2").getBoundingClientRect();
+            const scaleX2 = imageRect2.width / 2480;
+            const scaleY2 = imageRect2.height / 3508;
+
+            const pricePerPiece30 = document.getElementById("pricePerPiece30");
+        pricePerPiece30.disabled = true; // Отключаем поле для редактирования
+        pricePerPiece30.value = ""; // Очищаем поле, чтобы не отображалось значение
+
+            coordinates2.forEach(coord => {
+                const field = document.getElementById(coord.field);
+                field.style.left = `${coord.x * scaleX2}px`;
+                field.style.top = `${coord.y * scaleY2}px`;
+                field.style.width = `${coord.width * scaleX2}px`;
+                field.style.fontSize = `${42 * scaleY2}px`;
+            });
+
+            // Координаты для третьего контейнера
+            const imageRect3 = document.getElementById("image3").getBoundingClientRect();
+            const scaleX3 = imageRect3.width / 2480;
+            const scaleY3 = imageRect3.height / 3508;
+
+            coordinates3.forEach(coord => {
+                const field = document.getElementById(coord.field);
+                field.style.left = `${coord.x * scaleX3}px`;
+                field.style.top = `${coord.y * scaleY3}px`;
+                field.style.width = `${coord.width * scaleX3}px`;
+                field.style.fontSize = `${42 * scaleY3}px`;
+            });
+
+            // Поле даты — устанавливаем отдельно
+            const dateField = document.getElementById("dateField");
+            dateField.style.left = `${685 * scaleX1}px`;
+            dateField.style.top = `${661 * scaleY1}px`;
+            dateField.style.width = `${(1140 - 685) * scaleX1}px`;
+            dateField.style.fontSize = `${60 * scaleY1}px`;
+        }
+
+        // Применяем координаты при загрузке страницы и при изменении размера окна
+        window.addEventListener("load", function() {
+            document.getElementById("dateField").textContent = getCurrentDate();
+            applyCoordinates();
+        });
+        window.addEventListener("resize", applyCoordinates);
+
+        // Функция для получения текущей даты
+        function getCurrentDate() {
+            const today = new Date();
+            const day = String(today.getDate()).padStart(2, '0');
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const year = today.getFullYear();
+            return `${day}.${month}.${year}`;
+        }
+
+        // Функция пересчета цены за тонну для первого контейнера
+        function calculatePricePerTon1() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece1").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 900.00) * 1000;  
+            document.getElementById("pricePerTon1").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon2() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece2").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 900.00) * 1000;  
+            document.getElementById("pricePerTon2").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon3() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece3").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 1.80) * 1000;  
+            document.getElementById("pricePerTon3").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon4() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece4").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 2.80) * 1000;  
+            document.getElementById("pricePerTon4").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon5() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece5").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 0.47) * 1000;  
+            document.getElementById("pricePerTon5").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon6() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece6").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 0.65) * 1000;  
+            document.getElementById("pricePerTon6").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon7() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece7").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 0.91) * 1000;  
+            document.getElementById("pricePerTon7").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon8() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece8").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 1.27) * 1000;  
+            document.getElementById("pricePerTon8").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon9() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece9").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 1.64) * 1000;  
+            document.getElementById("pricePerTon9").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon10() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece10").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 2.05) * 1000;  
+            document.getElementById("pricePerTon10").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon11() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece11").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 2.56) * 1000;  
+            document.getElementById("pricePerTon11").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon12() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece12").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 3.09) * 1000;  
+            document.getElementById("pricePerTon12").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon13() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece13").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 3.98) * 1000;  
+            document.getElementById("pricePerTon13").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon14() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece14").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 4.93) * 1000;  
+            document.getElementById("pricePerTon14").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon15() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece15").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 6.44) * 1000;  
+            document.getElementById("pricePerTon15").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon16() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece16").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 8.38) * 1000;  
+            document.getElementById("pricePerTon16").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon17() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece17").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 0.65) * 1000;  
+            document.getElementById("pricePerTon17").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon18() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece18").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 0.92) * 1000;  
+            document.getElementById("pricePerTon18").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon19() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece19").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 1.24) * 1000;  
+            document.getElementById("pricePerTon19").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon20() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece20").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 1.60) * 1000;  
+            document.getElementById("pricePerTon20").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon21() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece21").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 2.05) * 1000;  
+            document.getElementById("pricePerTon21").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon22() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece22").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 2.51) * 1000;  
+            document.getElementById("pricePerTon22").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon23() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece23").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 3.03) * 1000;  
+            document.getElementById("pricePerTon23").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon24() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece24").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 3.91) * 1000;  
+            document.getElementById("pricePerTon24").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon25() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece25").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 5.06) * 1000;  
+            document.getElementById("pricePerTon25").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon26() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece26").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 5.55) * 1000;  
+            document.getElementById("pricePerTon26").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon27() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece27").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 6.44) * 1000;  
+            document.getElementById("pricePerTon27").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+
+        // Функция пересчета цены за тонну для второго контейнера
+        function calculatePricePerTon28() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece28").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 8.08) * 1000;  
+            document.getElementById("pricePerTon28").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+
+        function calculatePricePerTon29() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece29").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 9.92) * 1000;  
+            document.getElementById("pricePerTon29").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+
+        function calculatePricePerTon31() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece31").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 1.25) * 1000;
+            document.getElementById("pricePerTon31").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon32() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece32").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 1.50) * 1000;
+            document.getElementById("pricePerTon32").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon33() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece33").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 1.56) * 1000;
+            document.getElementById("pricePerTon33").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon34() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece34").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 1.99) * 1000;
+            document.getElementById("pricePerTon34").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon35() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece35").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 1.95) * 1000;
+            document.getElementById("pricePerTon35").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon36() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece36").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 2.54) * 1000;
+            document.getElementById("pricePerTon36").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon37() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece37").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 3.00) * 1000;
+            document.getElementById("pricePerTon37").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon38() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece38").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 3.16) * 1000;
+            document.getElementById("pricePerTon38").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon39() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece39").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 3.78) * 1000;
+            document.getElementById("pricePerTon39").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon40() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece40").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 5.00) * 1000;
+            document.getElementById("pricePerTon40").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon41() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece41").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 5.70) * 1000;
+            document.getElementById("pricePerTon41").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon42() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece42").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 5.90) * 1000;
+            document.getElementById("pricePerTon42").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon43() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece43").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 6.95) * 1000;
+            document.getElementById("pricePerTon43").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon44() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece44").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 7.36) * 1000;
+            document.getElementById("pricePerTon44").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon45() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece45").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 8.51) * 1000;
+            document.getElementById("pricePerTon45").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon46() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece46").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 8.50) * 1000;
+            document.getElementById("pricePerTon46").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon47() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece47").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 9.90) * 1000;
+            document.getElementById("pricePerTon47").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon48() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece48").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 11.10) * 1000;
+            document.getElementById("pricePerTon48").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon49() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece49").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 11.00) * 1000;
+            document.getElementById("pricePerTon49").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon50() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece50").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 12.50) * 1000;
+            document.getElementById("pricePerTon50").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon51() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece51").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 15.90) * 1000;
+            document.getElementById("pricePerTon51").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon52() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece52").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 12.00) * 1000;
+            document.getElementById("pricePerTon52").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon53() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece53").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 13.75) * 1000;
+            document.getElementById("pricePerTon53").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon54() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece54").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 15.91) * 1000;
+            document.getElementById("pricePerTon54").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon55() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece55").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 17.76) * 1000;
+            document.getElementById("pricePerTon55").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon56() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece56").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 20.50) * 1000;
+            document.getElementById("pricePerTon56").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon57() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece57").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 22.00) * 1000;
+            document.getElementById("pricePerTon57").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon58() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece58").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 25.30) * 1000;
+            document.getElementById("pricePerTon58").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon59() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece59").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 39.17) * 1000;
+            document.getElementById("pricePerTon59").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon60() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece60").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 6.25) * 1000;
+            document.getElementById("pricePerTon60").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon61() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece61").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 7.30) * 1000;
+            document.getElementById("pricePerTon61").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon62() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece62").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 8.99) * 1000;
+            document.getElementById("pricePerTon62").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon63() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece63").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 10.80) * 1000;
+            document.getElementById("pricePerTon63").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon64() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece64").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 12.90) * 1000;
+            document.getElementById("pricePerTon64").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon65() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece65").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 15.00) * 1000;
+            document.getElementById("pricePerTon65").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon66() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece66").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 17.41) * 1000;
+            document.getElementById("pricePerTon66").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+
+
+        // Функция пересчета цены за тонну для третьего контейнера
+        function calculatePricePerTon67() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece67").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 19.20) * 1000;
+            document.getElementById("pricePerTon67").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon68() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece68").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 22.00) * 1000;
+            document.getElementById("pricePerTon68").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon69() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece69").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 26.65) * 1000;
+            document.getElementById("pricePerTon69").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon70() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece70").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 29.00) * 1000;
+            document.getElementById("pricePerTon70").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon71() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece71").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 33.65) * 1000;
+            document.getElementById("pricePerTon71").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+
+        function calculatePricePerTon72() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece72").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 9.59) * 1000;
+            document.getElementById("pricePerTon72").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon73() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece73").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 11.67) * 1000;
+            document.getElementById("pricePerTon73").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon74() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece74").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 13.34) * 1000;
+            document.getElementById("pricePerTon74").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon75() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece75").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 16.67) * 1000;
+            document.getElementById("pricePerTon75").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon76() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece76").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 22.20) * 1000;
+            document.getElementById("pricePerTon76").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon77() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece77").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 26.80) * 1000;
+            document.getElementById("pricePerTon77").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon78() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece78").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 33.30) * 1000;
+            document.getElementById("pricePerTon78").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon79() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece79").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 42.50) * 1000;
+            document.getElementById("pricePerTon79").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon80() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece80").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 63.75) * 1000;
+            document.getElementById("pricePerTon80").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon81() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece81").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 90.42) * 1000;
+            document.getElementById("pricePerTon81").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon82() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece82").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 31.17) * 1000;
+            document.getElementById("pricePerTon82").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon83() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece83").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 45.83) * 1000;
+            document.getElementById("pricePerTon83").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon84() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece84").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 58.67) * 1000;
+            document.getElementById("pricePerTon84").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon85() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece85").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 39.58) * 1000;
+            document.getElementById("pricePerTon85").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        function calculatePricePerTon86() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece86").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 51.30) * 1000;
+            document.getElementById("pricePerTon86").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+
+        function calculatePricePerTon87() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece87").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 25.5) * 1000;
+            document.getElementById("pricePerTon87").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+
+        function calculatePricePerTon88() {
+            const pricePerPieceValue = parseFloat(document.getElementById("pricePerPiece88").value.replace(/\s+/g, '')) || 0;
+            const pricePerTonValue = (pricePerPieceValue / 0.016) * 1000;
+            document.getElementById("pricePerTon88").value = formatNumberWithSpaces(roundToNearestThousandIfNeeded(pricePerTonValue));
+        }
+        
+        
+
+        // Форматирование числа с пробелами
+        function formatNumberWithSpaces(number) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        }
+
+        // Округление до тысяч
+        function roundToNearestThousandIfNeeded(number) {
+            return number > 100000 ? Math.round(number / 1000) * 1000 : Math.round(number);
+        }
+
+        // Обработчики для изменения цены за штуку для всех контейнеров
+        document.getElementById("pricePerPiece1").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon1();
+        });
+        
+        document.getElementById("pricePerPiece2").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon2();
+        });
+        
+        document.getElementById("pricePerPiece3").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon3();
+        });
+        
+        document.getElementById("pricePerPiece4").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon4();
+        });
+        
+        document.getElementById("pricePerPiece5").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon5();
+        });
+        
+        document.getElementById("pricePerPiece6").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon6();
+        });
+        
+        document.getElementById("pricePerPiece7").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon7();
+        });
+        
+        document.getElementById("pricePerPiece8").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon8();
+        });
+        
+        document.getElementById("pricePerPiece9").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon9();
+        });
+        
+        document.getElementById("pricePerPiece10").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon10();
+        });
+        
+        document.getElementById("pricePerPiece11").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon11();
+        });
+        
+        document.getElementById("pricePerPiece12").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon12();
+        });
+        
+        document.getElementById("pricePerPiece13").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon13();
+        });
+        
+        document.getElementById("pricePerPiece14").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon14();
+        });
+        
+        document.getElementById("pricePerPiece15").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon15();
+        });
+        
+        document.getElementById("pricePerPiece16").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon16();
+        });
+        
+        document.getElementById("pricePerPiece17").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon17();
+        });
+        
+        document.getElementById("pricePerPiece18").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon18();
+        });
+        
+        document.getElementById("pricePerPiece19").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon19();
+        });
+        
+        document.getElementById("pricePerPiece20").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon20();
+        });
+        
+        document.getElementById("pricePerPiece21").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon21();
+        });
+        
+        document.getElementById("pricePerPiece22").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon22();
+        });
+        
+        document.getElementById("pricePerPiece23").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon23();
+        });
+        
+        document.getElementById("pricePerPiece24").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon24();
+        });
+        
+        document.getElementById("pricePerPiece25").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon25();
+        });
+        
+        document.getElementById("pricePerPiece26").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon26();
+        });
+        
+        document.getElementById("pricePerPiece27").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon27();
+        });
+        
+
+        document.getElementById("pricePerPiece28").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon28();
+        });
+
+        document.getElementById("pricePerPiece29").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon29();
+        });
+
+        document.getElementById("pricePerPiece31").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon31();
+        });
+        
+        document.getElementById("pricePerPiece32").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon32();
+        });
+        
+        document.getElementById("pricePerPiece33").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon33();
+        });
+        
+        document.getElementById("pricePerPiece34").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon34();
+        });
+        
+        document.getElementById("pricePerPiece35").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon35();
+        });
+        
+        document.getElementById("pricePerPiece36").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon36();
+        });
+        
+        document.getElementById("pricePerPiece37").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon37();
+        });
+        
+        document.getElementById("pricePerPiece38").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon38();
+        });
+        
+        document.getElementById("pricePerPiece39").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon39();
+        });
+        
+        document.getElementById("pricePerPiece40").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon40();
+        });
+        
+        document.getElementById("pricePerPiece41").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon41();
+        });
+        
+        document.getElementById("pricePerPiece42").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon42();
+        });
+        
+        document.getElementById("pricePerPiece43").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon43();
+        });
+        
+        document.getElementById("pricePerPiece44").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon44();
+        });
+        
+        document.getElementById("pricePerPiece45").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon45();
+        });
+        
+        document.getElementById("pricePerPiece46").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon46();
+        });
+        
+        document.getElementById("pricePerPiece47").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon47();
+        });
+        
+        document.getElementById("pricePerPiece48").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon48();
+        });
+        
+        document.getElementById("pricePerPiece49").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon49();
+        });
+        
+        document.getElementById("pricePerPiece50").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon50();
+        });
+        
+        document.getElementById("pricePerPiece51").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon51();
+        });
+        
+        document.getElementById("pricePerPiece52").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon52();
+        });
+        
+        document.getElementById("pricePerPiece53").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon53();
+        });
+        
+        document.getElementById("pricePerPiece54").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon54();
+        });
+        
+        document.getElementById("pricePerPiece55").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon55();
+        });
+        
+        document.getElementById("pricePerPiece56").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon56();
+        });
+        
+        document.getElementById("pricePerPiece57").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon57();
+        });
+        
+        document.getElementById("pricePerPiece58").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon58();
+        });
+        
+        document.getElementById("pricePerPiece59").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon59();
+        });
+        
+        document.getElementById("pricePerPiece60").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon60();
+        });
+        
+        document.getElementById("pricePerPiece61").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon61();
+        });
+        
+        document.getElementById("pricePerPiece62").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon62();
+        });
+        
+        document.getElementById("pricePerPiece63").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon63();
+        });
+        
+        document.getElementById("pricePerPiece64").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon64();
+        });
+        
+        document.getElementById("pricePerPiece65").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon65();
+        });
+        
+        document.getElementById("pricePerPiece66").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon66();
+        });
+        
+
+        document.getElementById("pricePerPiece67").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon67();
+        });
+        
+        document.getElementById("pricePerPiece68").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon68();
+        });
+        
+        document.getElementById("pricePerPiece69").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon69();
+        });
+        
+        document.getElementById("pricePerPiece70").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon70();
+        });
+        
+        document.getElementById("pricePerPiece71").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon71();
+        });
+        
+        document.getElementById("pricePerPiece72").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon72();
+        });
+        
+        document.getElementById("pricePerPiece73").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon73();
+        });
+        
+        document.getElementById("pricePerPiece74").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon74();
+        });
+        
+        document.getElementById("pricePerPiece75").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon75();
+        });
+        
+        document.getElementById("pricePerPiece76").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon76();
+        });
+        
+        document.getElementById("pricePerPiece77").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon77();
+        });
+        
+        document.getElementById("pricePerPiece78").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon78();
+        });
+        
+        document.getElementById("pricePerPiece79").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon79();
+        });
+        
+        document.getElementById("pricePerPiece80").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon80();
+        });
+        
+        document.getElementById("pricePerPiece81").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon81();
+        });
+        
+        document.getElementById("pricePerPiece82").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon82();
+        });
+        
+        document.getElementById("pricePerPiece83").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon83();
+        });
+        
+        document.getElementById("pricePerPiece84").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon84();
+        });
+        
+        document.getElementById("pricePerPiece85").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon85();
+        });
+        
+        document.getElementById("pricePerPiece86").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon86();
+        });
+
+        document.getElementById("pricePerPiece87").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon87();
+        });
+        
+        document.getElementById("pricePerPiece88").addEventListener("input", function() {
+            this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+            calculatePricePerTon88();
+        });
+        
+        
+
+        // Обработчики событий для всех полей
+        const pieceFields = [
+            "pricePerPiece1", "pricePerPiece2", "pricePerPiece3", "pricePerPiece4",
+            "pricePerPiece5", "pricePerPiece6", "pricePerPiece7", "pricePerPiece8",
+            "pricePerPiece9", "pricePerPiece10", "pricePerPiece11", "pricePerPiece12",
+            "pricePerPiece13", "pricePerPiece14", "pricePerPiece15", "pricePerPiece16",
+            "pricePerPiece17", "pricePerPiece18", "pricePerPiece19", "pricePerPiece20",
+            "pricePerPiece21", "pricePerPiece22", "pricePerPiece23", "pricePerPiece24",
+            "pricePerPiece25", "pricePerPiece26", "pricePerPiece27", "pricePerPiece28", 
+            "pricePerPiece29", "pricePerTon30", "pricePerPiece31", "pricePerPiece32", "pricePerPiece33", "pricePerPiece34", "pricePerPiece35", "pricePerPiece36", 
+"pricePerPiece37", "pricePerPiece38", "pricePerPiece39", "pricePerPiece40", "pricePerPiece41", "pricePerPiece42", 
+"pricePerPiece43", "pricePerPiece44", "pricePerPiece45", "pricePerPiece46", "pricePerPiece47", "pricePerPiece48", 
+"pricePerPiece49", "pricePerPiece50", "pricePerPiece51", "pricePerPiece52", "pricePerPiece53", "pricePerPiece54", 
+"pricePerPiece55", "pricePerPiece56", "pricePerPiece57", "pricePerPiece58", "pricePerPiece59", "pricePerPiece60", 
+"pricePerPiece61", "pricePerPiece62", "pricePerPiece63", "pricePerPiece64", "pricePerPiece65", "pricePerPiece66",
+"pricePerPiece67", "pricePerPiece68", "pricePerPiece69", "pricePerPiece70", "pricePerPiece71", "pricePerPiece72", "pricePerPiece73", 
+"pricePerPiece74", "pricePerPiece75", "pricePerPiece76", "pricePerPiece77", 
+"pricePerPiece78", "pricePerPiece79", "pricePerPiece80", "pricePerPiece81", 
+"pricePerPiece82", "pricePerPiece83", "pricePerPiece84", "pricePerPiece85", "pricePerPiece86", "pricePerPiece87",  
+"pricePerPiece88"
+
+        ];
+
+        pieceFields.forEach(function(fieldId) {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.addEventListener("input", function() {
+                    this.value = formatNumberWithSpaces(this.value.replace(/\s+/g, ''));
+                    const calculateFunction = window[`calculatePricePerTon${fieldId.match(/\d+/)[0]}`];
+                    if (calculateFunction) calculateFunction();
+                });
+
+                field.addEventListener("focus", function() {
+                    if (this.value === "0") {
+                        this.value = ""; // Очистка значения при фокусе
+                    }
+                });
+
+                field.addEventListener("blur", function() {
+                    if (this.value === "") {
+                        this.value = "0"; // Возврат значения "0" при потере фокуса
+                    }
+                });
+            }
+        });
+
+        
+
+
+        
+
+ // Сохранение в PDF
+ document.getElementById("savePdfBtn").addEventListener("click", async function() {
+    const images = ['template1.jpg', 'template2.jpg', 'template3.jpg'];  // Массив путей к изображениям
+    const dateText = document.getElementById("dateField").value;  // Получаем текст из поля даты
+
+    
+        // Получаем значения текстовых полей
+        const fields = {
+            pricePerPiece1: document.getElementById("pricePerPiece1").value,
+            pricePerTon1: document.getElementById("pricePerTon1").value,
+            pricePerPiece2: document.getElementById("pricePerPiece2").value,
+            pricePerTon2: document.getElementById("pricePerTon2").value,
+            pricePerPiece3: document.getElementById("pricePerPiece3").value,
+            pricePerTon3: document.getElementById("pricePerTon3").value,
+            pricePerPiece4: document.getElementById("pricePerPiece4").value,
+            pricePerTon4: document.getElementById("pricePerTon4").value,
+            pricePerPiece5: document.getElementById("pricePerPiece5").value,
+            pricePerTon5: document.getElementById("pricePerTon5").value,
+            pricePerPiece6: document.getElementById("pricePerPiece6").value,
+            pricePerTon6: document.getElementById("pricePerTon6").value,
+            pricePerPiece7: document.getElementById("pricePerPiece7").value,
+            pricePerTon7: document.getElementById("pricePerTon7").value,
+            pricePerPiece8: document.getElementById("pricePerPiece8").value,
+            pricePerTon8: document.getElementById("pricePerTon8").value,
+            pricePerPiece9: document.getElementById("pricePerPiece9").value,
+            pricePerTon9: document.getElementById("pricePerTon9").value,
+            pricePerPiece10: document.getElementById("pricePerPiece10").value,
+            pricePerTon10: document.getElementById("pricePerTon10").value,
+            pricePerPiece11: document.getElementById("pricePerPiece11").value,
+            pricePerTon11: document.getElementById("pricePerTon11").value,
+            pricePerPiece12: document.getElementById("pricePerPiece12").value,
+            pricePerTon12: document.getElementById("pricePerTon12").value,
+            pricePerPiece13: document.getElementById("pricePerPiece13").value,
+            pricePerTon13: document.getElementById("pricePerTon13").value,
+            pricePerPiece14: document.getElementById("pricePerPiece14").value,
+            pricePerTon14: document.getElementById("pricePerTon14").value,
+            pricePerPiece15: document.getElementById("pricePerPiece15").value,
+            pricePerTon15: document.getElementById("pricePerTon15").value,
+            pricePerPiece16: document.getElementById("pricePerPiece16").value,
+            pricePerTon16: document.getElementById("pricePerTon16").value,
+            pricePerPiece17: document.getElementById("pricePerPiece17").value,
+            pricePerTon17: document.getElementById("pricePerTon17").value,
+            pricePerPiece18: document.getElementById("pricePerPiece18").value,
+            pricePerTon18: document.getElementById("pricePerTon18").value,
+            pricePerPiece19: document.getElementById("pricePerPiece19").value,
+            pricePerTon19: document.getElementById("pricePerTon19").value,
+            pricePerPiece20: document.getElementById("pricePerPiece20").value,
+            pricePerTon20: document.getElementById("pricePerTon20").value,
+            pricePerPiece21: document.getElementById("pricePerPiece21").value,
+            pricePerTon21: document.getElementById("pricePerTon21").value,
+            pricePerPiece22: document.getElementById("pricePerPiece22").value,
+            pricePerTon22: document.getElementById("pricePerTon22").value,
+            pricePerPiece23: document.getElementById("pricePerPiece23").value,
+            pricePerTon23: document.getElementById("pricePerTon23").value,
+            pricePerPiece24: document.getElementById("pricePerPiece24").value,
+            pricePerTon24: document.getElementById("pricePerTon24").value,
+            pricePerPiece25: document.getElementById("pricePerPiece25").value,
+            pricePerTon25: document.getElementById("pricePerTon25").value,
+            pricePerPiece26: document.getElementById("pricePerPiece26").value,
+            pricePerTon26: document.getElementById("pricePerTon26").value,
+            pricePerPiece27: document.getElementById("pricePerPiece27").value,
+            pricePerTon27: document.getElementById("pricePerTon27").value
+
+        };
+    
+        // Вызов API для сохранения PDF с датой и текстовыми полями через PyWebView
+        const response = await window.pywebview.api.save_pdf(images, dateText, fields);
+        alert(response);
+    });
+    
+
+    // Сохранение файла для редактирования
+document.getElementById("saveBtn").addEventListener("click", async function() {
+    const data = {
+        dateField: document.getElementById("dateField").value,
+        pricePerPiece1: document.getElementById("pricePerPiece1").value,
+        pricePerTon1: document.getElementById("pricePerTon1").value,
+        pricePerPiece2: document.getElementById("pricePerPiece2").value,
+        pricePerTon2: document.getElementById("pricePerTon2").value,
+        pricePerPiece3: document.getElementById("pricePerPiece3").value,
+        pricePerTon3: document.getElementById("pricePerTon3").value,
+        pricePerPiece4: document.getElementById("pricePerPiece4").value,
+        pricePerTon4: document.getElementById("pricePerTon4").value,
+        pricePerPiece5: document.getElementById("pricePerPiece5").value,
+        pricePerTon5: document.getElementById("pricePerTon5").value,
+        pricePerPiece6: document.getElementById("pricePerPiece6").value,
+        pricePerTon6: document.getElementById("pricePerTon6").value,
+        pricePerPiece7: document.getElementById("pricePerPiece7").value,
+        pricePerTon7: document.getElementById("pricePerTon7").value,
+        pricePerPiece8: document.getElementById("pricePerPiece8").value,
+        pricePerTon8: document.getElementById("pricePerTon8").value,
+        pricePerPiece9: document.getElementById("pricePerPiece9").value,
+        pricePerTon9: document.getElementById("pricePerTon9").value,
+        pricePerPiece10: document.getElementById("pricePerPiece10").value,
+        pricePerTon10: document.getElementById("pricePerTon10").value,
+        pricePerPiece11: document.getElementById("pricePerPiece11").value,
+        pricePerTon11: document.getElementById("pricePerTon11").value,
+        pricePerPiece12: document.getElementById("pricePerPiece12").value,
+        pricePerTon12: document.getElementById("pricePerTon12").value,
+        pricePerPiece13: document.getElementById("pricePerPiece13").value,
+        pricePerTon13: document.getElementById("pricePerTon13").value,
+        pricePerPiece14: document.getElementById("pricePerPiece14").value,
+        pricePerTon14: document.getElementById("pricePerTon14").value,
+        pricePerPiece15: document.getElementById("pricePerPiece15").value,
+        pricePerTon15: document.getElementById("pricePerTon15").value,
+        pricePerPiece16: document.getElementById("pricePerPiece16").value,
+        pricePerTon16: document.getElementById("pricePerTon16").value,
+        pricePerPiece17: document.getElementById("pricePerPiece17").value,
+        pricePerTon17: document.getElementById("pricePerTon17").value,
+        pricePerPiece18: document.getElementById("pricePerPiece18").value,
+        pricePerTon18: document.getElementById("pricePerTon18").value,
+        pricePerPiece19: document.getElementById("pricePerPiece19").value,
+        pricePerTon19: document.getElementById("pricePerTon19").value,
+        pricePerPiece20: document.getElementById("pricePerPiece20").value,
+        pricePerTon20: document.getElementById("pricePerTon20").value,
+        pricePerPiece21: document.getElementById("pricePerPiece21").value,
+        pricePerTon21: document.getElementById("pricePerTon21").value,
+        pricePerPiece22: document.getElementById("pricePerPiece22").value,
+        pricePerTon22: document.getElementById("pricePerTon22").value,
+        pricePerPiece23: document.getElementById("pricePerPiece23").value,
+        pricePerTon23: document.getElementById("pricePerTon23").value,
+        pricePerPiece24: document.getElementById("pricePerPiece24").value,
+        pricePerTon24: document.getElementById("pricePerTon24").value,
+        pricePerPiece25: document.getElementById("pricePerPiece25").value,
+        pricePerTon25: document.getElementById("pricePerTon25").value,
+        pricePerPiece26: document.getElementById("pricePerPiece26").value,
+        pricePerTon26: document.getElementById("pricePerTon26").value,
+        pricePerPiece27: document.getElementById("pricePerPiece27").value,
+        pricePerTon27: document.getElementById("pricePerTon27").value,
+
+    };
+
+    const response = await window.pywebview.api.save_json(data);
+    alert(response);
+});
+
+// Открытие файла для редактирования
+document.getElementById("openBtn").addEventListener("click", async function() {
+    const data = await window.pywebview.api.open_json();
+    if (data) {
+        document.getElementById("dateField").value = data.dateField || '';
+        document.getElementById("pricePerPiece1").value = data.pricePerPiece1 || '';
+        document.getElementById("pricePerTon1").value = data.pricePerTon1 || '';
+        document.getElementById("pricePerPiece2").value = data.pricePerPiece2 || '';
+        document.getElementById("pricePerTon2").value = data.pricePerTon2 || '';
+        document.getElementById("pricePerPiece3").value = data.pricePerPiece3 || '';
+        document.getElementById("pricePerTon3").value = data.pricePerTon3 || '';
+        document.getElementById("pricePerPiece4").value = data.pricePerPiece4 || '';
+        document.getElementById("pricePerTon4").value = data.pricePerTon4 || '';
+        document.getElementById("pricePerPiece5").value = data.pricePerPiece5 || '';
+        document.getElementById("pricePerTon5").value = data.pricePerTon5 || '';
+        document.getElementById("pricePerPiece6").value = data.pricePerPiece6 || '';
+        document.getElementById("pricePerTon6").value = data.pricePerTon6 || '';
+        document.getElementById("pricePerPiece7").value = data.pricePerPiece7 || '';
+        document.getElementById("pricePerTon7").value = data.pricePerTon7 || '';
+        document.getElementById("pricePerPiece8").value = data.pricePerPiece8 || '';
+        document.getElementById("pricePerTon8").value = data.pricePerTon8 || '';
+        document.getElementById("pricePerPiece9").value = data.pricePerPiece9 || '';
+        document.getElementById("pricePerTon9").value = data.pricePerTon9 || '';
+        document.getElementById("pricePerPiece10").value = data.pricePerPiece10 || '';
+        document.getElementById("pricePerTon10").value = data.pricePerTon10 || '';
+        document.getElementById("pricePerPiece11").value = data.pricePerPiece11 || '';
+        document.getElementById("pricePerTon11").value = data.pricePerTon11 || '';
+        document.getElementById("pricePerPiece12").value = data.pricePerPiece12 || '';
+        document.getElementById("pricePerTon12").value = data.pricePerTon12 || '';
+        document.getElementById("pricePerPiece13").value = data.pricePerPiece13 || '';
+        document.getElementById("pricePerTon13").value = data.pricePerTon13 || '';
+        document.getElementById("pricePerPiece14").value = data.pricePerPiece14 || '';
+        document.getElementById("pricePerTon14").value = data.pricePerTon14 || '';
+        document.getElementById("pricePerPiece15").value = data.pricePerPiece15 || '';
+        document.getElementById("pricePerTon15").value = data.pricePerTon15 || '';
+        document.getElementById("pricePerPiece16").value = data.pricePerPiece16 || '';
+        document.getElementById("pricePerTon16").value = data.pricePerTon16 || '';
+        document.getElementById("pricePerPiece17").value = data.pricePerPiece17 || '';
+        document.getElementById("pricePerTon17").value = data.pricePerTon17 || '';
+        document.getElementById("pricePerPiece18").value = data.pricePerPiece18 || '';
+        document.getElementById("pricePerTon18").value = data.pricePerTon18 || '';
+        document.getElementById("pricePerPiece19").value = data.pricePerPiece19 || '';
+        document.getElementById("pricePerTon19").value = data.pricePerTon19 || '';
+        document.getElementById("pricePerPiece20").value = data.pricePerPiece20 || '';
+        document.getElementById("pricePerTon20").value = data.pricePerTon20 || '';
+        document.getElementById("pricePerPiece21").value = data.pricePerPiece21 || '';
+        document.getElementById("pricePerTon21").value = data.pricePerTon21 || '';
+        document.getElementById("pricePerPiece22").value = data.pricePerPiece22 || '';
+        document.getElementById("pricePerTon22").value = data.pricePerTon22 || '';
+        document.getElementById("pricePerPiece23").value = data.pricePerPiece23 || '';
+        document.getElementById("pricePerTon23").value = data.pricePerTon23 || '';
+        document.getElementById("pricePerPiece24").value = data.pricePerPiece24 || '';
+        document.getElementById("pricePerTon24").value = data.pricePerTon24 || '';
+        document.getElementById("pricePerPiece25").value = data.pricePerPiece25 || '';
+        document.getElementById("pricePerTon25").value = data.pricePerTon25 || '';
+        document.getElementById("pricePerPiece26").value = data.pricePerPiece26 || '';
+        document.getElementById("pricePerTon26").value = data.pricePerTon26 || '';
+        document.getElementById("pricePerPiece27").value = data.pricePerPiece27 || '';
+        document.getElementById("pricePerTon27").value = data.pricePerTon27 || '';
+
+        alert("Данные успешно загружены.");
+    } else {
+        alert("Файл не был выбран.");
+    }
+});
+
+    </script>
+</body>
+</html>
